@@ -110,10 +110,20 @@
 	</script>
 
 	<div class="container no-print">
+		<div class="mt-3 mb-3">
+			<div class="alert alert-warning" role="alert">
+				<p>Kända saker</p>
+				<ul>
+					<li>Vi behöver kontrollera om mappningen blir rätt, samt bestämma exakta kolumner/värden att exportera. Testa och öppna Excel-filerna som kan exporteras enligt nedan</li>
+					<li>Till en början kan man få klicka två gånger på knapparna för att resultatet ska visas</li>
+				</ul>
+			</div>	
+		</div>
+
 		<div class="accordion mt-3 mb-3" id="accordionExample">
 			<div class="accordion-item">
 			  <h2 class="accordion-header" id="headingIO">
-				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
 				  A. Importera medlemmar från IdrottOnline
 				</button>
 			  </h2>
@@ -163,7 +173,7 @@
 								<li class="list-group-item">C. Klicka på Medlemmar</li>
 								<li class="list-group-item">D. Se också till att välja grupp <span class="fw-bold">Medlemmar</span> i gruppmenyvalet till höger</li>
 								<li class="list-group-item">E. Kryssa i alla medlemmar (se checkbox på tabellens titelrad för alla medlemmar som listas)</li>
-								<li class="list-group-item">F. Du får troligen upp en gul hjälptext. Se till att <span class="fw-bold">markera alla</span> medlemmar.</li>
+								<li class="list-group-item">F. Du får troligen upp en gul hjälptext. Se till att <span class="fw-bold">markera alla</span> medlemmar</li>
 								<li class="list-group-item">G. Klicka på knappen <span class="fw-bold">Excel</span></li>
 								<li class="list-group-item">H. Markera alla fält, därefter <span class="fw-bold">Exportera till Excel</span></li>
 							</ul>
@@ -215,6 +225,7 @@
 
 	<div class="container-fluid">
 		<div id="pageBody"></div>
+		<div class="container mb-3">Source: <a href="https://github.com/callebokedal/sfk-io-to-mc" target="_blank">github.com/callebokedal/sfk-io-to-mc</a></div>
 	</div>
 
     <script>
