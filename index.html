@@ -155,14 +155,32 @@
 			  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingMC" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
 					
-					<form class="row g-3 my-1">
-						<div class="col-auto">
-							<input class="form-control" type="file" id="mcFile" accept=".xls,.xlsx,.xlsb">
-						</div>
-						<div class="col-auto">
-							<a href="#import-mc" class="btn btn-primary">Läs in fil - från My Club</a>
-						</div>
-					</form>
+					<ul class="list-group mb-4">
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar från <a href="https://member.myclub.se/accounts/login/" target="_blank">My Club</a>
+							<ul class="list-group mb-1">
+								<li class="list-group-item">A. Logga in som vanligt</li>
+								<li class="list-group-item">B. Välj <span class="fw-bold">Sektionsadministatör</span> för <span class="fw-bold">Sjövalla FK SFF</span></li>
+								<li class="list-group-item">C. Klicka på Medlemmar</li>
+								<li class="list-group-item">D. Se också till att välja grupp <span class="fw-bold">Medlemmar</span> i gruppmenyvalet till höger</li>
+								<li class="list-group-item">E. Kryssa i alla medlemmar (se checkbox på tabellens titelrad för alla medlemmar som listas)</li>
+								<li class="list-group-item">F. Du får troligen upp en gul hjälptext. Se till att <span class="fw-bold">markera alla</span> medlemmar.</li>
+								<li class="list-group-item">G. Klicka på knappen <span class="fw-bold">Excel</span></li>
+								<li class="list-group-item">H. Markera alla fält, därefter <span class="fw-bold">Exportera till Excel</span></li>
+							</ul>
+						</li>
+						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
+						<li class="list-group-item">3. Gå till denna sida och läs in Excel-filen:
+							<form class="row g-3 my-1">
+								<div class="col-auto">
+									<input class="form-control" type="file" id="mcFile" accept=".xls,.xlsx,.xlsb">
+								</div>
+								<div class="col-auto">
+									<a href="#import-mc" class="btn btn-primary">Läs in fil - från My Club</a>
+								</div>
+							</form>
+						</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt C</li>
+					</ul>
 				</div>
 			  </div>
 			</div>
