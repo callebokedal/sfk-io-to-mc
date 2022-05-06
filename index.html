@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="referrer" content="strict-origin">
+    <title>Medlemmar från IdrottOnline till My Club</title>
+	<link href="lib/bootstrap-5.0.1/css/bootstrap.min.css" rel="stylesheet">
+	<link href="lib/css/style.css" rel="stylesheet">
+	<link rel="icon" href="lib/img/favicon.svg">
+	<link rel="apple-touch-icon" href="lib/img/favicon.ico">
+    <script src="lib/bootstrap-5.0.1/js/bootstrap.min.js"></script>
+    <script src="lib/js/jquery-3.6.0.min.js"></script>
+    <!--<script src="lib/js/pouchdb-7.3.0.min.js"></script>-->
+    <script src="lib/js/lodash.min.js"></script>
+    <script src="lib/js/xlsx.full.min.js"></script>
+    <script src="lib/js/routie.min.js"></script>
+    <script src="lib/js/app.js"></script>
+    <script src="lib/js/routers.js"></script>
+</head>
+<body>
+
+	<nav class="navbar navbar-dark shadow-sm no-print">
+		<div class="container">
+			<a class="navbar-brand" href="#">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#fff" class="bi bi-grid-3x3-gap-fill" viewBox="0 0 16 16">
+				<path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/>
+			</svg>
+			Sjövalla FK - Medlemmar från IO till MC
+			</a>
+		</div>
+	</nav>
+
+	<!-- Template for A4-page with 3x8 grids -->
+	<script type="text/template" id="listTemplate">
+		<%
+			if (data.type == "io") {
+				header = "Från IdrottOnline";
+				caption =  "Medlemmar i IdrottOnline (totalt x st)";
+				listId = "io-filter";
+				tableId = "io-table";
+				colIdx = 3;
+			} else if(data.type == "mc") {
+				header = "Från My Club";
+				caption =  "Medlemmar i My Club (totalt x st)";
+				listId = "mc-filter";
+				tableId = "mc-table";
+				colIdx = 2;
+			} else if(data.type == "updated") {
+				header = "Uppdaterade medlemmar";
+				caption =  "Medlemmar till My Club (totalt x st)";
+				listId = "mc-updated";
+				tableId = "mc-table";
+				colIdx = 2;
+			} else if(data.type == "deleted") {
+				header = "Medlemmar att ta bort i My Club";
+				caption =  "Medlemmar att ta bort i My Club (totalt x st)";
+				listId = "mc-deleted";
+				tableId = "mc-table";
+				colIdx = 2;
+			} else {
+				header = "";
+				caption = "";
+			}
+		%>
+		<h3><%= header %></h3>
+
+		<div>
+			<form>
+				<div class="input-group mb-3">
+					<input type="text" id="<%= listId %>" class="form-control" onkeyup="filterList('<%= listId %>','<%= tableId %>', '<%= colIdx %>');" placeholder="Filtrera på förnamn" aria-label="Filtrera på förnamn">
+					<button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="clearListFilter('<%= listId %>','<%= tableId %>', '<%= colIdx %>');">Rensa filter</button>
+				</div>
+			</form>
+		</div>
+
+		<div class="table-responsive">
+		<table class="table table-sm table-striped table-hover table-bordered" id="<%= tableId %>">
+		<caption><%= caption %></caption>
+		<thead class="table-dark">
+			<tr>
+				<td class="text-center">#</td>
+				<% _.forEach(_.keys(data.persons[0]), function(k) { %>
+				<td><%= k %></td>
+				<% }); %>
+			</tr>
+		</thead>
+		<tbody>
+			<% 
+			let idx = 1;
+			_.forEach(data.persons, function(p) { 
+			%><tr>
+				<td class="text-center table-dark"><%= idx++ %></td>
+				<% _.forEach(_.values(p), function(v) { %>
+				<td><%= v %></td>
+				<% }); %>
+			</tr><%
+			}); %>
+		</tbody>
+		<tfoot class="table-dark">
+			<tr>
+				<td class="text-center">#</td>
+				<% _.forEach(_.keys(data.persons[0]), function(k) { %>
+				<td><%= k %></td>
+				<% }); %>
+			</tr>
+		</tfoot>
+		</table>
+		</div>
+	</script>
+
+	<div class="container no-print">
+		<div class="accordion mt-3 mb-3" id="accordionExample">
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingIO">
+				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				  A. Importera medlemmar från IdrottOnline
+				</button>
+			  </h2>
+			  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingIO" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<ul class="list-group mb-4">
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar från <a href="https://www.sjovalla.se" target="_blank">IdrottOnline</a>
+							<ul class="list-group mb-1">
+								<li class="list-group-item">A. Logga in som vanligt</li>
+								<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Personer</span></li>
+								<li class="list-group-item">C. Klicka på Sök (dvs. sök på alla medlemmar)</li>
+								<li class="list-group-item">D. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel</span></li>
+								<li class="list-group-item">E. Välj <span class="fw-bold">Exportera med födelsedatum</span> samt <span class="fw-bold">Exkludera målsman</span></li>
+								<li class="list-group-item">F. Klicka <span class="fw-bold">Exportera</span></li>
+							</ul>
+						</li>
+						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
+						<li class="list-group-item">3. Gå till denna sida och läs in Excel-filen:
+							<form class="row g-3 my-1">
+								<div class="col-auto">
+									<input class="form-control" type="file" id="ioFile" accept=".xls,.xlsx,.xlsb">
+								</div>
+								<div class="col-auto">
+									<a href="#import-io" class="btn btn-primary">Läs in fil - från IdrottOnline</a>
+								</div>
+							</form>
+						</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt B</li>
+					</ul>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingMC">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+				  B. Importera medlemmar från My Club
+				</button>
+			  </h2>
+			  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingMC" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					
+					<form class="row g-3 my-1">
+						<div class="col-auto">
+							<input class="form-control" type="file" id="mcFile" accept=".xls,.xlsx,.xlsb">
+						</div>
+						<div class="col-auto">
+							<a href="#import-mc" class="btn btn-primary">Läs in fil - från My Club</a>
+						</div>
+					</form>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingUpdates">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+				  C. Nya samt uppdaterade medlemmar
+				</button>
+			  </h2>
+			  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingUpdates" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<a href="#list-updated" class="btn btn-secondary">Visa nya och uppdaterade medlemmar</a>
+					<a href="#export-updated" class="btn btn-primary">Skapa fil för uppdateringar av medlemmar i My Club</a>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingDeletes">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+				  D. Medlemmar som ska tas bort i My Club
+				</button>
+			  </h2>
+			  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingDeletes" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<a href="#list-deleted" class="btn btn-secondary">Visa medlemmar för borttagning i My Club</a>
+					<a href="#export-deleted" class="btn btn-primary">Skapa fil för borttagning av medlemmar i My Club</a>
+				</div>
+			  </div>
+			</div>
+		  </div>
+	</div>
+
+	<div class="container-fluid">
+		<div id="pageBody"></div>
+	</div>
+
+    <script>
+		'use strict';
+		document.addEventListener('DOMContentLoaded', function (event) {
+			console.log("Ready!");
+			setupRouters();
+			routie("");
+		});
+    </script>
+</body>
+</html>

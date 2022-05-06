@@ -1,0 +1,78 @@
+nav {
+    background-color: #3f9049;
+}
+
+div.persons .name[title] {
+    color: #198754;
+    cursor: help;
+}
+
+.bg-success-light {
+    background-color: #d1e7dd;
+}
+.bg-danger-light {
+    background-color: #f8d7da;
+}
+
+/*@page {
+    size: 21cm 29.7cm;
+    margin: 30mm 45mm 30mm 45mm;
+}*/
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media screen {
+	.page-break	{ 
+        display: none; 
+        page-break-before: avoid; 
+    }
+    .person .toggler {
+        cursor: pointer;
+    }
+}
+
+@media print {
+
+	/*.page-break	{ display: none; }*/
+	.page-break	{ display: block; page-break-before: always; }
+
+    html, body {
+        width: 210mm;
+        height: 297mm;
+    }
+
+    * {
+        font-size: small;
+    }
+
+    .no-print {
+        display: none;
+    }
+    div.page .name[title] {
+        color: #000;
+    }
+
+    div.page {
+        margin-left: 0.2cm;
+        padding-top: 0.5cm;
+    }
+    div.person {
+        padding-top: 0.3cm;
+        height: 3.6cm; /* Each label have this height */
+        /*background-color: #198754;*/
+    }
+
+    div.border {
+        border: 0 #fff !important;
+    }
+    
+    .bg-success-light {
+        background-color: transparent;
+    }
+    .bg-danger-light {
+        background-color: transparent;
+    }
+
+}
