@@ -40,22 +40,46 @@
 				listId = "io-filter";
 				tableId = "io-table";
 				colIdx = 3;
+			} else if (data.type == "io_fee_payed") {
+				header = "Från IdrottOnline - Medlemsavgift betald";
+				caption =  "Medlemmar i IdrottOnline some betalt medlemsavgift";
+				listId = "io_fee_payed-filter";
+				tableId = "io-table";
+				colIdx = 3;
+			} else if (data.type == "io_fee_sent") {
+				header = "Från IdrottOnline - Medlemsavgift skickad";
+				caption =  "Medlemmar i IdrottOnline som fått medlemsavgift utskickad (men ännu ej betalat)";
+				listId = "io_fee_sent-filter";
+				tableId = "io-table";
+				colIdx = 3;
+			} else if (data.type == "io_fee_overdue") {
+				header = "Från IdrottOnline - Medlemsavgift försenad";
+				caption =  "Medlemmar i IdrottOnline som med försenad medlemsavgift";
+				listId = "io_fee_overdue-filter";
+				tableId = "io-table";
+				colIdx = 3;
 			} else if(data.type == "mc") {
 				header = "Från My Club";
 				caption =  "Medlemmar i My Club (totalt x st)";
 				listId = "mc-filter";
 				tableId = "mc-table";
 				colIdx = 2;
-			} else if(data.type == "updated") {
-				header = "Uppdaterade medlemmar";
-				caption =  "Medlemmar till My Club (totalt x st)";
-				listId = "mc-updated";
-				tableId = "mc-table";
-				colIdx = 2;
-			} else if(data.type == "deleted") {
-				header = "Medlemmar att ta bort i My Club";
-				caption =  "Medlemmar att ta bort i My Club (totalt x st)";
-				listId = "mc-deleted";
+			} else if(data.type == "members") {
+				header = "Medlemmar";
+				caption = "Medlemmar";
+				listId = "members-filter";
+				tableId = "members-table";
+				colIdx = 1;
+			} else if(data.type == "io_fee_not_sent") {
+				header = "Till IdrottOnline Avgifter - Medlemsar som ej fått medlemsavgift skickad";
+				caption = "Medlemsar som ej fått medlemsavgift skickad";
+				listId = "io_fee_not_sent-filter";
+				tableId = "io-table";
+				colIdx = 3;
+			} else if(data.type == "mc_import") {
+				header = "MyClub import";
+				caption =  "MyClub import";
+				listId = "mc-import";
 				tableId = "mc-table";
 				colIdx = 2;
 			} else {
@@ -111,10 +135,12 @@
 
 	<div class="container no-print">
 		<div class="mt-3 mb-3">
-			<div class="alert alert-warning" role="alert">
-				<p>Kända saker</p>
+			<div class="alert alert-info" role="alert">
+				<p>Detta javascript hjälper till att processa medlemslistor från Idrott Online och My Club. Det finns några olika användningsområden:</p>
 				<ul>
-					<li>Vi behöver kontrollera om mappningen blir rätt, samt bestämma exakta kolumner/värden att exportera. Testa och öppna Excel-filerna som kan exporteras enligt nedan</li>
+					<li>Uppdatera medlemsregistret i My Club. Gör steg A, C och F</li>
+					<li>Få en medlemslista i Excel där man enkelt ser sektionstillhörighet och betalstatus på medlemsavgiften. Gör steg A, B och D</li>
+					<li>Få en lista på medelemmar som inte fåt årets medlemsavgift utskickad. Gör steg A, B och E</li>
 				</ul>
 			</div>	
 		</div>
@@ -123,19 +149,19 @@
 			<div class="accordion-item">
 			  <h2 class="accordion-header" id="headingIO">
 				<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-				  A. Importera medlemmar från IdrottOnline
+				  A. Importera alla medlemmar från IdrottOnline
 				</button>
 			  </h2>
-			  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingIO" data-bs-parent="#accordionExample">
+			  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingIO" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
 					<ul class="list-group mb-4">
-						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar från <a href="https://www.sjovalla.se" target="_blank">IdrottOnline</a>
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar från <a href="https://ioa.idrottonline.se" target="_blank">IdrottOnline</a>
 							<ul class="list-group mb-1">
 								<li class="list-group-item">A. Logga in som vanligt</li>
 								<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Personer</span></li>
 								<li class="list-group-item">C. Klicka på Sök (dvs. sök på alla medlemmar)</li>
-								<li class="list-group-item">D. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel</span></li>
-								<li class="list-group-item">E. Välj <span class="fw-bold">Exportera med födelsedatum</span> samt <span class="fw-bold">Exkludera målsman</span></li>
+								<li class="list-group-item">D. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel, välj kolumner</span></li>
+								<li class="list-group-item">E. Välj <span class="fw-bold">Exportera med personnummer</span>, <span class="fw-bold">Exkludera målsman</span> samt kryss i <span class="fw-bold">Markera allt</span></li>
 								<li class="list-group-item">F. Klicka <span class="fw-bold">Exportera</span></li>
 							</ul>
 						</li>
@@ -150,31 +176,145 @@
 								</div>
 							</form>
 						</li>
-						<li class="list-group-item">4. Klart - fortsätt enligt B</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt B1, eller hoppa direkt till C för att bara få ut importfilen till MyClub.</li>
+					</ul>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingIO_fee_payed">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoOne" aria-expanded="false" aria-controls="collapseTwoOne">
+				  B1. Importera medlemmar betalat medlemsavgiften från IdrottOnline
+				</button>
+			  </h2>
+			  <div id="collapseTwoOne" class="accordion-collapse collapse" aria-labelledby="headingIO_fee_payed" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<ul class="list-group mb-4">
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar som betalat medlemsavgiften från <a href="https://ioa.idrottonline.se" target="_blank">IdrottOnline</a>
+							<ul class="list-group mb-1">
+								<li class="list-group-item">A. Logga in som vanligt</li>
+								<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Personer</span></li>
+								<li class="list-group-item">C. Välj utökad sökning</li>
+								<li class="list-group-item">D. Välj <span class="fw-bold">Avgift</span> till t.ex. <span class="fw-bold">Medlemsavgift 2022</span></li>
+								<li class="list-group-item">E. Välj <span class="fw-bold">Status</span> till <span class="fw-bold">Betald</span></li>
+								<li class="list-group-item">F. Klicka på Sök</li>
+								<li class="list-group-item">G. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel</span></li>
+								<li class="list-group-item">H. Välj <span class="fw-bold">Exportera med födelsedatum</span> samt <span class="fw-bold">Exkludera målsman</span></li>
+								<li class="list-group-item">I. Klicka <span class="fw-bold">Exportera</span></li>
+							</ul>
+						</li>
+						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
+						<li class="list-group-item">3. Gå till denna sida och läs in Excel-filen:
+							<form class="row g-3 my-1">
+								<div class="col-auto">
+									<input class="form-control" type="file" id="io_fee_payed_file" accept=".xls,.xlsx,.xlsb">
+								</div>
+								<div class="col-auto">
+									<a href="#import-io_fee_payed" class="btn btn-primary">Läs in fil - från IdrottOnline</a>
+								</div>
+							</form>
+						</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt B2</li>
+					</ul>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingIOfee">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoTwo" aria-expanded="false" aria-controls="collapseTwoTwo">
+				  B2. Importera medlemmar som fått medlemsavgiftsavin skickad från IdrottOnline
+				</button>
+			  </h2>
+			  <div id="collapseTwoTwo" class="accordion-collapse collapse" aria-labelledby="headingIOfee" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<ul class="list-group mb-4">
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar som medlemsavgiftsavin skickad från <a href="https://ioa.idrottonline.se" target="_blank">IdrottOnline</a>
+							<ul class="list-group mb-1">
+								<li class="list-group-item">A. Logga in som vanligt</li>
+								<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Personer</span></li>
+								<li class="list-group-item">C. Välj utökad sökning</li>
+								<li class="list-group-item">D. Välj <span class="fw-bold">Avgift</span> till t.ex. <span class="fw-bold">Medlemsavgift 2022</span></li>
+								<li class="list-group-item">E. Välj <span class="fw-bold">Status</span> till <span class="fw-bold">Skickad</span></li>
+								<li class="list-group-item">F. Klicka på Sök</li>
+								<li class="list-group-item">G. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel</span></li>
+								<li class="list-group-item">H. Välj <span class="fw-bold">Exportera med födelsedatum</span> samt <span class="fw-bold">Exkludera målsman</span></li>
+								<li class="list-group-item">I. Klicka <span class="fw-bold">Exportera</span></li>
+							</ul>
+						</li>
+						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
+						<li class="list-group-item">3. Gå till denna sida och läs in Excel-filen:
+							<form class="row g-3 my-1">
+								<div class="col-auto">
+									<input class="form-control" type="file" id="io_fee_sent_file" accept=".xls,.xlsx,.xlsb">
+								</div>
+								<div class="col-auto">
+									<a href="#import-io_fee_sent" class="btn btn-primary">Läs in fil - från IdrottOnline</a>
+								</div>
+							</form>
+						</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt B3</li>
+					</ul>
+				</div>
+			  </div>
+			</div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingIOfee">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwoThree" aria-expanded="false" aria-controls="collapseTwoThree">
+				  B3. Importera medlemmar där medlemsavgiften förfallit från IdrottOnline
+				</button>
+			  </h2>
+			  <div id="collapseTwoThree" class="accordion-collapse collapse" aria-labelledby="headingIOfee" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<ul class="list-group mb-4">
+						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar där medlemsavgiften förfallit från <a href="https://ioa.idrottonline.se" target="_blank">IdrottOnline</a>
+							<ul class="list-group mb-1">
+								<li class="list-group-item">A. Logga in som vanligt</li>
+								<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Personer</span></li>
+								<li class="list-group-item">C. Välj utökad sökning</li>
+								<li class="list-group-item">D. Välj <span class="fw-bold">Avgift</span> till t.ex. <span class="fw-bold">Medlemsavgift 2022</span></li>
+								<li class="list-group-item">E. Välj <span class="fw-bold">Status</span> till <span class="fw-bold">Förfallen</span></li>
+								<li class="list-group-item">F. Klicka på Sök</li>
+								<li class="list-group-item">G. Välj <span class="fw-bold">Exportera</span> &raquo; <span class="fw-bold">Exportera till Excel</span></li>
+								<li class="list-group-item">H. Välj <span class="fw-bold">Exportera med födelsedatum</span> samt <span class="fw-bold">Exkludera målsman</span></li>
+								<li class="list-group-item">I. Klicka <span class="fw-bold">Exportera</span></li>
+							</ul>
+						</li>
+						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
+						<li class="list-group-item">3. Gå till denna sida och läs in Excel-filen:
+							<form class="row g-3 my-1">
+								<div class="col-auto">
+									<input class="form-control" type="file" id="io_fee_overdue_file" accept=".xls,.xlsx,.xlsb">
+								</div>
+								<div class="col-auto">
+									<a href="#import-io_fee_overdue" class="btn btn-primary">Läs in fil - från IdrottOnline</a>
+								</div>
+							</form>
+						</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt C, eller hoppa till D om du inte vill ha ut importfiler till MyClub</li>
 					</ul>
 				</div>
 			  </div>
 			</div>
 			<div class="accordion-item">
 			  <h2 class="accordion-header" id="headingMC">
-				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-				  B. Importera medlemmar från My Club
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+				  C. Importera medlemmar från My Club
 				</button>
 			  </h2>
-			  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingMC" data-bs-parent="#accordionExample">
+			  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingMC" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
-					
 					<ul class="list-group mb-4">
 						<li class="list-group-item">1. Exportera en Excel-fil med medlemmar från <a href="https://member.myclub.se/accounts/login/" target="_blank">My Club</a>
 							<ul class="list-group mb-1">
 								<li class="list-group-item">A. Logga in som vanligt</li>
 								<li class="list-group-item">B. Välj <span class="fw-bold">Sektionsadministatör</span> för <span class="fw-bold">Sjövalla FK SFF</span></li>
-								<li class="list-group-item">C. Klicka på Medlemmar</li>
-								<li class="list-group-item">D. Se också till att välja grupp <span class="fw-bold">Medlemmar</span> i gruppmenyvalet till höger</li>
-								<li class="list-group-item">E. Kryssa i alla medlemmar (se checkbox på tabellens titelrad för alla medlemmar som listas)</li>
-								<li class="list-group-item">F. Du får troligen upp en gul hjälptext. Se till att <span class="fw-bold">markera alla</span> medlemmar</li>
-								<li class="list-group-item">G. Klicka på knappen <span class="fw-bold">Excel</span></li>
-								<li class="list-group-item">H. Markera alla fält, därefter <span class="fw-bold">Exportera till Excel</span></li>
+								<li class="list-group-item">C. Klicka på <span class="fw-bold">Medlemmar</span></li>
+								<li class="list-group-item">D. Kryssa i alla medlemmar (se checkbox på tabellens titelrad för alla medlemmar som listas)</li>
+								<li class="list-group-item">E. Du får troligen upp en gul hjälptext. Se till att <span class="fw-bold">markera alla</span> medlemmar</li>
+								<li class="list-group-item">F. Välj <span class="fw-bold">Exportera</span> och sedan <span class="fw-bold">Till Excel/PDF</span></li>
+								<li class="list-group-item">G. Se till att filformatet är <span class="fw-bold">Excel</span></li>
+								<li class="list-group-item">H. Välj <span class="fw-bold">Kolumner</span> och välj sedan <span class="fw-bold">Markera alla</span></li>
+								<li class="list-group-item">I. Klicka på <span class="fw-bold">Exportera</span></li>
 							</ul>
 						</li>
 						<li class="list-group-item">2. Spara Excel-filen på din dator</li>
@@ -188,38 +328,88 @@
 								</div>
 							</form>
 						</li>
-						<li class="list-group-item">4. Klart - fortsätt enligt C</li>
+						<li class="list-group-item">4. Klart - fortsätt enligt D</li>
 					</ul>
 				</div>
 			  </div>
 			</div>
 			<div class="accordion-item">
-			  <h2 class="accordion-header" id="headingUpdates">
-				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-				  C. Nya samt uppdaterade medlemmar
+			  <h2 class="accordion-header" id="headingMembers">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+				  D. Medlemslista
 				</button>
 			  </h2>
-			  <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingUpdates" data-bs-parent="#accordionExample">
+			  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingMembers" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
-					<a href="#list-updated" class="btn btn-secondary">Visa nya och uppdaterade medlemmar</a>
-					<a href="#export-updated" class="btn btn-primary">Skapa fil för uppdateringar av medlemmar i My Club</a>
+					<p>För att få ut en medlemslista måste steg A och B vara genomförda.</p>
+					<a href="#list-members" class="btn btn-secondary">Visa Medlemslista</a>
+					<a href="#export-members" class="btn btn-primary">Skapa fil för medlemslista</a>
 				</div>
 			  </div>
 			</div>
 			<div class="accordion-item">
-			  <h2 class="accordion-header" id="headingDeletes">
-				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-				  D. Medlemmar som ska tas bort i My Club
+			  <h2 class="accordion-header" id="headingFeeNotSent">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+				  E. Medlemmar som inte fått medlemsavgift skickad
 				</button>
 			  </h2>
-			  <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingDeletes" data-bs-parent="#accordionExample">
+			  <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFeeNotSent" data-bs-parent="#accordionExample">
 				<div class="accordion-body">
-					<a href="#list-deleted" class="btn btn-secondary">Visa medlemmar för borttagning i My Club</a>
-					<a href="#export-deleted" class="btn btn-primary">Skapa fil för borttagning av medlemmar i My Club</a>
+					<p>För att få ut en list på medlemmar som inte fått avi med medlemsavgift skickad till sig måste steg A och B vara genomförda.</p>
+					<a href="#list-feeNotSent" class="btn btn-secondary">Visa medlemmar som inte fått medlemsavgift skickad</a>
+					<a href="#export-feeNotSent" class="btn btn-primary">Skapa fil med medlemmar som inte fått medlemsavgift skickad</a>
+					<p>Den exporterade filen kan importeras och sedan användas i Idrott Online enligt följande
+					<ul class="list-group mb-1">
+						<li class="list-group-item">A. Logga in som vanligt</li>
+						<li class="list-group-item">B. Gå till <span class="fw-bold">Administration</span> &raquo; <span class="fw-bold">Grupper</span></li>
+						<li class="list-group-item">C. Skriv <span class="fw-bold">sfk</span> i <span class="fw-bold">Sök grupp</span></li>
+						<li class="list-group-item">D. Klicka på Sök</li>
+						<li class="list-group-item">E. Klicka på gruppen <span class="fw-bold">SFK Skicka medlemsavgift</span></li>
+						<li class="list-group-item">F. Välj <span class="fw-bold">500 poster per sida</span>, markera alla gruppmedlemmar och klicka på <span class="fw-bold">Ta bort</span></li>
+						<li class="list-group-item">G. Svara <span class="fw-bold">Ja</span> på frågan om även målsmän skall tas bort</li>
+						<li class="list-group-item">H. Välj <span class="fw-bold">Lägg till person</span> och <span class="fw-bold">Importera medlemmar till gruppen</span></li>
+						<li class="list-group-item">I. Svara <span class="fw-bold">Spara ändringar och fortsätt</span></li>
+						<li class="list-group-item">J. Välj den skapade importfilen som finns i din Download-folder och klicka <span class="fw-bold">Importera</span><br><span class="fw-bold">OBS!</span> Endast medlemmar med fullständigt personnummer kommer med i denna import. Övriga får läggas till manuellt</li>
+						<li class="list-group-item">K. Klicka på <span class="fw-bold">Spara</span></li>
+					</ul>
+					<p>Nu finns det en grupp som går att använda när en ny avgift skall skickas ut.
 				</div>
 			  </div>
 			</div>
-		  </div>
+			<div class="accordion-item">
+			  <h2 class="accordion-header" id="headingUpdates">
+				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+				  F. MyClub import file
+				</button>
+			  </h2>
+			  <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingUpdates" data-bs-parent="#accordionExample">
+				<div class="accordion-body">
+					<p>För att få ut en lista på alla nya och uppdaterade medlemmar till MyClub, samt även de medlemmar som skall tas bort från MyClub<br>
+					<span class="fw-bold">OBS!</span> Endast medlemmar med fullständigt personnummer kommer med i denna import.</p>
+					<a href="#list-myclub_import" class="btn btn-secondary">Visa MyClub import tabell</a>
+					<a href="#export-myclub_import" class="btn btn-primary">Skapa fil för MyClub import</a>
+					<p>Den exporterade filen kan importeras i MyClub enligt följande<P>
+					<ul class="list-group mb-1">
+						<li class="list-group-item">A. Logga in som vanligt i MyClub och välj Sjövalla FK SFF</li>
+						<li class="list-group-item">B. Gå till <span class="fw-bold">Medlemmar</span> &raquo; <span class="fw-bold">Ny medlem</span></li>
+						<li class="list-group-item">C. Välj <span class="fw-bold">Importera från Excel</span></li>
+						<li class="list-group-item">D. Välj <span class="fw-bold">Ny import</span></li>
+						<li class="list-group-item">E. Välj den skapade importfilen som finns i din Download-folder och klicka <span class="fw-bold">Ladda upp</span><br><span class="fw-bold"></li>
+						<li class="list-group-item">F. Klicka i rutan <span class="fw-bold">Skriv över</span></li>
+						<li class="list-group-item">G. Kontrollera att mappningen av kolumner stämmer. Kolumnen <span class="fw-bold">Hedersmedlem</span> brukar blir och skall mappas mot <span class="fw-bold">Hedersmedlem</span> och inget annat.</li>
+						<li class="list-group-item">H. Klicka <span class="fw-bold">Ladda upp</span></li>
+						<li class="list-group-item">I. När uppladdningen är klar, gå till fliken <span class="fw-bold">Medelemmar</span></li>
+						<li class="list-group-item">J. Välj <span class="fw-bold">Utökad sökning</span> </li>
+						<li class="list-group-item">K. Välj <span class="fw-bold">Öpppna Gruppväljare</span> </li>
+						<li class="list-group-item">L. Välj gruppen <span class="fw-bold">Remove</span> och stäng Gruppväljaren</li>
+						<li class="list-group-item">M. Klicka <span class="fw-bold">Sök medlemmar</span></li>
+						<li class="list-group-item">N. Markera alla medlemmar i gruppen <span class="fw-bold">Remove</span></li>
+						<li class="list-group-item">O. Klicka på <span class="fw-bold">Slutade</span> </li>
+					</ul>
+				</div>
+			  </div>
+			</div>
+		</div>
 	</div>
 
 	<div class="container-fluid">
